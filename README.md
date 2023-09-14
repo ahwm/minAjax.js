@@ -1,12 +1,13 @@
 # minAjax.js
+
 A minimalist Javascript library to perform AJAX POST and GET Request.
 
+## Check Pretty Documentation
 
+[http://flouthoc.github.io/minAjax.js/]
 
-# Check Pretty Documentation
-http://flouthoc.github.io/minAjax.js/
+## Usage
 
-# Usage
 Getting Started
 
 ```bash
@@ -17,8 +18,8 @@ npm i minajax.js
 <script type="text/javascript" src="https://cdn.rawgit.com/flouthoc/minAjax.js/master/minify/index.min.js"></script>
 ```
 
+### Regular
 
-#### Regular
 ```js
   minAjax({
     url:"test.php",//request URL
@@ -36,25 +37,28 @@ npm i minajax.js
     }
 
   });
-  
-````
+```
+
 This is example to use minAjax() , these are the frequent arguments which are usually passed for request to take place there are some optional arguments i'll explain them below.
 
-# <strong>Compulsory Arguments</strong>
+## Required Arguments
 
-##### <b>url:</b>
+### url
+
 ```js
   url:'Path or Link to Server Side.'
 ```
 
-##### <b>type:</b>
+### type
+
 ```js
-  type:'GET or POST'
+  method:'GET or POST'
 ```
 
-# <strong>Optional Arguments</strong>
+## Optional Arguments
 
-##### <b>data:</b>
+### data
+
 ```js
   data:{
           param1:value1,
@@ -67,33 +71,39 @@ This is example to use minAjax() , these are the frequent arguments which are us
           }
 ```
 
-##### <b>success:</b>
+### success
+
 ```js
   success: function(data){
           alert(data);
           //function to be executed on true response with response TEXT as argument.
           }
 ```
-Execution of Callback function on valid response is totally optional , function can take <b>Response text</b> and <b>Response Status</b> as arguments to process on client side.
 
-##### <b>method:</b>
+Execution of Callback function on valid response is totally optional , function can take `ResponseText` and `ResponseStatus` as arguments to process on client side.
+
+### method
+
 ```js
-method:'True For Asyn and False for Non-Async | By default it is True'
+async:'True For Asyn and False for Non-Async | By default it is True'
 ```
-By Default Method will be <b>True i.e Async calls . You Can Leave This</b>
 
-##### <b>debugLog:</b>
+By Default Method will be `True` i.e Async calls. **You Can Leave This**
+
+### debugLog
+
 ```js
 debugLog:'True to enable Debug Console Logs | By Default it is False'
 ```
-By Default Method will be <b>False | You Can Leave This</b>
+
+By Default Method will be `False` | **You Can Leave This**
 
 ## Example with all arguments
 
 ```js
 minAjax({
-    url:"test.php",//request URL
-    type:"GET",//Request type GET/POST
+    url: "test.php",//request URL
+    method: "GET",//Request type GET/POST
     //Send Data in form of GET/POST
     data:{
       name:"Superman",
@@ -102,7 +112,7 @@ minAjax({
       worth:"poor",
       company:"Daily Planet"
     },
-    method:"true",
+    async: true,
     debugLog:"true",
     //CALLBACK FUNCTION with RESPONSE as argument
     success: function(data){
@@ -112,8 +122,7 @@ minAjax({
   });
   
 ```
-# Fork it , Create Pull 
-@flouthoc (http://twitter.com/flouthoc)
 
+## Fork it
 
-
+Contributions welcome

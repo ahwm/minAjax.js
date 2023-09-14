@@ -3,9 +3,18 @@
   |--Author : flouthoc (gunnerar7@gmail.com)(http://github.com/flouthoc)--|
   |--Contributers : Add Your Name Below--|
   */
+
+var XMLHTTPtypes = [
+    function() { return new XMLHttpRequest(); },
+    function() { return new ActiveXObject("Msxml3.XMLHTTP"); },
+    function() { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); },
+    function() { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); },
+    function() { return new ActiveXObject("Msxml2.XMLHTTP"); },
+    function() { return new ActiveXObject("Microsoft.XMLHTTP"); }
+];
 function initXMLhttp() {
 
-    var xmlhttp;
+    var xmlhttp: XMLHttpRequest;
     if (window.XMLHttpRequest) {
         //code for IE7,firefox chrome and above
         xmlhttp = new XMLHttpRequest();
@@ -17,37 +26,45 @@ function initXMLhttp() {
     return xmlhttp;
 }
 
-function minAjax(config) {
+class AjaxConfig {
+    url: string;
+    debugLog: boolean;
+    method: string;
+    async: boolean;
+    success: Function;
+    errorCallback: Function;
+    data: any;
+}
+
+function minAjax(config: AjaxConfig) {
 
     /*Config Structure
             url:"reqesting URL"
             type:"GET or POST"
-            method: "(OPTIONAL) True for async and False for Non-async | By default its Async"
+            async: "(OPTIONAL) True for async and False for Non-async | By default its Async"
             debugLog: "(OPTIONAL)To display Debug Logs | By default it is false"
             data: "(OPTIONAL) another Nested Object which should contains reqested Properties in form of Object Properties"
             success: "(OPTIONAL) Callback function to process after response | function(data,status)"
+            errorCallback: "(OPTIONAL) Callback function to process after error | function()"
     */
 
     if (!config.url) {
-
         if (config.debugLog == true)
             console.log("No Url!");
         return;
-
-    }
-
-    if (!config.type) {
-
-        if (config.debugLog == true)
-            console.log("No Default type (GET/POST) given!");
-        return;
-
     }
 
     if (!config.method) {
-        config.method = true;
+        if (config.debugLog == true)
+            console.log("No Default method (GET/POST) given!");
+        return;
     }
 
+    if (config.async === undefined || config.async === true) {
+        config.async = true;
+    } else {
+        config.async = false;
+    }
 
     if (!config.debugLog) {
         config.debugLog = false;
@@ -80,7 +97,7 @@ function minAjax(config) {
         }
     }
 
-    var sendString = [],
+    var sendString: string[] = [],
         sendData = config.data;
     if( typeof sendData === "string" ){
         var tmpArr = String.prototype.split.call(sendData,'&');
@@ -100,25 +117,21 @@ function minAjax(config) {
             }
         }
     }
-    sendString = sendString.join('&');
+    var sendStr = sendString.join('&');
 
-    if (config.type == "GET") {
-        xmlhttp.open("GET", config.url + "?" + sendString, config.method);
+    if (config.method == "GET") {
+        xmlhttp.open("GET", config.url + "?" + sendStr, config.async);
         xmlhttp.send();
 
         if (config.debugLog == true)
-            console.log("GET fired at:" + config.url + "?" + sendString);
+            console.log("GET fired at:" + config.url + "?" + sendStr);
     }
-    if (config.type == "POST") {
-        xmlhttp.open("POST", config.url, config.method);
+    if (config.method == "POST") {
+        xmlhttp.open("POST", config.url, config.async);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlhttp.send(sendString);
+        xmlhttp.send(sendStr);
 
         if (config.debugLog == true)
-            console.log("POST fired at:" + config.url + " || Data:" + sendString);
+            console.log("POST fired at:" + config.url + " || Data:" + sendStr);
     }
-
-
-
-
 }
