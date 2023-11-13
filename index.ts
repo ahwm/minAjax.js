@@ -4,14 +4,6 @@
   |--Contributers : Add Your Name Below--|
   */
 
-var XMLHTTPtypes = [
-    function() { return new XMLHttpRequest(); },
-    function() { return new ActiveXObject("Msxml3.XMLHTTP"); },
-    function() { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); },
-    function() { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); },
-    function() { return new ActiveXObject("Msxml2.XMLHTTP"); },
-    function() { return new ActiveXObject("Microsoft.XMLHTTP"); }
-];
 function initXMLhttp() {
 
     var xmlhttp: XMLHttpRequest;
@@ -30,6 +22,7 @@ class AjaxConfig {
     url: string;
     debugLog: boolean;
     method: string;
+    contentType: string;
     async: boolean;
     success: Function;
     errorCallback: Function;
@@ -39,11 +32,12 @@ class AjaxConfig {
 function minAjax(config: AjaxConfig) {
 
     /*Config Structure
-            url:"reqesting URL"
-            type:"GET or POST"
-            async: "(OPTIONAL) True for async and False for Non-async | By default its Async"
-            debugLog: "(OPTIONAL)To display Debug Logs | By default it is false"
-            data: "(OPTIONAL) another Nested Object which should contains reqested Properties in form of Object Properties"
+            url: "reqesting URL"
+            type: "GET, POST, PUT, HEAD, DELETE, PATCH"
+            async: "(OPTIONAL) True for async and False for Non-async | Default: true"
+            contentType: "(OPTIONAL) Content type of the request | Default: application/x-www-form-urlencoded"
+            debugLog: "(OPTIONAL) To display Debug Logs | Default: false"
+            data: "(OPTIONAL) Object which should contain reqested Properties in form of Object Properties"
             success: "(OPTIONAL) Callback function to process after response | function(data,status)"
             errorCallback: "(OPTIONAL) Callback function to process after error | function()"
     */
@@ -90,7 +84,7 @@ function minAjax(config: AjaxConfig) {
             if (config.debugLog == true)
                 console.log("FailureResponse --> State:" + xmlhttp.readyState + "Status:" + xmlhttp.status);
           
-            if(config.errorCallback){
+            if (config.errorCallback) {
                 console.log("Calling Error Callback");
                 config.errorCallback();
             }
@@ -99,13 +93,13 @@ function minAjax(config: AjaxConfig) {
 
     var sendString: string[] = [],
         sendData = config.data;
-    if( typeof sendData === "string" ){
+    if ( typeof sendData === "string" ) {
         var tmpArr = String.prototype.split.call(sendData,'&');
         for(var i = 0, j = tmpArr.length; i < j; i++){
             var datum = tmpArr[i].split('=');
             sendString.push(encodeURIComponent(datum[0]) + "=" + encodeURIComponent(datum[1]));
         }
-    }else if( typeof sendData === 'object' && !( sendData instanceof String || (FormData && sendData instanceof FormData) ) ){
+    } else if( typeof sendData === 'object' && !( sendData instanceof String || (FormData && sendData instanceof FormData) ) ){
         for (var k in sendData) {
             var datum = sendData[k];
             if( Object.prototype.toString.call(datum) == "[object Array]" ){
@@ -123,15 +117,16 @@ function minAjax(config: AjaxConfig) {
         xmlhttp.open("GET", config.url + "?" + sendStr, config.async);
         xmlhttp.send();
 
-        if (config.debugLog == true)
+        if (config.debugLog == true) {
             console.log("GET fired at:" + config.url + "?" + sendStr);
-    }
-    if (config.method == "POST") {
-        xmlhttp.open("POST", config.url, config.async);
-        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        }
+    } else {
+        xmlhttp.open(config.method, config.url, config.async);
+        xmlhttp.setRequestHeader("Content-type", config.contentType !== null ? config.contentType : "application/x-www-form-urlencoded");
         xmlhttp.send(sendStr);
 
-        if (config.debugLog == true)
-            console.log("POST fired at:" + config.url + " || Data:" + sendStr);
+        if (config.debugLog == true) {
+            console.log(`${config.method} fired at: ${config.url} || Data: ${sendStr}`);
+        }
     }
 }

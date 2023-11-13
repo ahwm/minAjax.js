@@ -1,11 +1,3 @@
-var XMLHTTPtypes = [
-    function () { return new XMLHttpRequest(); },
-    function () { return new ActiveXObject("Msxml3.XMLHTTP"); },
-    function () { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); },
-    function () { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); },
-    function () { return new ActiveXObject("Msxml2.XMLHTTP"); },
-    function () { return new ActiveXObject("Microsoft.XMLHTTP"); }
-];
 function initXMLhttp() {
     var xmlhttp;
     if (window.XMLHttpRequest) {
@@ -24,13 +16,16 @@ function minAjax(config) {
             console.log("No Url!");
         return;
     }
-    if (!config.type) {
+    if (!config.method) {
         if (config.debugLog == true)
-            console.log("No Default type (GET/POST) given!");
+            console.log("No Default method (GET/POST) given!");
         return;
     }
-    if (config.async === undefined) {
+    if (config.async === undefined || config.async === true) {
         config.async = true;
+    }
+    else {
+        config.async = false;
     }
     if (!config.debugLog) {
         config.debugLog = false;
@@ -77,18 +72,20 @@ function minAjax(config) {
         }
     }
     var sendStr = sendString.join('&');
-    if (config.type == "GET") {
+    if (config.method == "GET") {
         xmlhttp.open("GET", config.url + "?" + sendStr, config.async);
         xmlhttp.send();
-        if (config.debugLog == true)
+        if (config.debugLog == true) {
             console.log("GET fired at:" + config.url + "?" + sendStr);
+        }
     }
-    if (config.type == "POST") {
-        xmlhttp.open("POST", config.url, config.async);
-        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    else {
+        xmlhttp.open(config.method, config.url, config.async);
+        xmlhttp.setRequestHeader("Content-type", config.contentType !== null ? config.contentType : "application/x-www-form-urlencoded");
         xmlhttp.send(sendStr);
-        if (config.debugLog == true)
-            console.log("POST fired at:" + config.url + " || Data:" + sendStr);
+        if (config.debugLog == true) {
+            console.log(`${config.method} fired at: ${config.url} || Data: ${sendStr}`);
+        }
     }
 }
 //# sourceMappingURL=index.js.map
